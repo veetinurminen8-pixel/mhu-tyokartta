@@ -837,7 +837,7 @@ contractSelect.addEventListener("change", () => {
   contractSelect.value = contract.id;
 });
 
-document.querySelectorAll("#add-work-button, #panel-add-button, #empty-add-button").forEach(button => button.addEventListener("click", () => openModal()));
+document.querySelectorAll("#add-work-button, #panel-add-button, #empty-add-button, #fullscreen-add-work-button").forEach(button => button.addEventListener("click", () => openModal()));
 document.querySelector("#close-modal").addEventListener("click", closeModal);
 document.querySelector("#cancel-modal").addEventListener("click", closeModal);
 modalBackdrop.addEventListener("click", event => {
@@ -1105,6 +1105,7 @@ document.querySelector("#layers-button").addEventListener("click", event => {
 
 const mapPanel = document.querySelector(".map-panel");
 const fullscreenButton = document.querySelector("#fullscreen-button");
+const fullscreenAddWorkButton = document.querySelector("#fullscreen-add-work-button");
 
 function isMapFullscreen() {
   return document.fullscreenElement === mapPanel;
@@ -1117,6 +1118,10 @@ function updateFullscreenButton() {
   fullscreenButton.title = active ? "Poistu koko näytöstä" : "Koko näyttö";
   fullscreenButton.setAttribute("aria-label", active ? "Poistu kartan koko näytön tilasta" : "Näytä kartta koko näytöllä");
   mapPanel.classList.toggle("map-panel-fullscreen", active);
+  fullscreenAddWorkButton.hidden = !active;
+  // Koko näytön tilassa selain näyttää vain fullscreen-elementin jälkeläiset,
+  // joten modaali-ikkuna pitää siirtää hetkeksi kartan sisään, jotta "Lisää työ" toimii myös silloin.
+  (active ? mapPanel : document.body).appendChild(modalBackdrop);
   window.setTimeout(() => map.invalidateSize(), 50);
 }
 

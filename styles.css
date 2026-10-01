@@ -86,6 +86,9 @@ button { color: inherit; }
 .panel-heading p { margin: 4px 0 0; font-size: 9px; color: #879189; }
 .map-location-icon { font-size: 13px; color: #72947b; }
 .map-tools { display: flex; align-items: center; gap: 6px; }
+.fullscreen-add-work-button { height: 30px; padding: 0 11px; font-size: 9px; }
+.fullscreen-add-work-button .plus-icon { font-size: 15px; }
+.fullscreen-add-work-button[hidden] { display: none; }
 .map-road-theme-switcher { display: flex; gap: 3px; padding: 3px; border: 1px solid #e0e6de; border-radius: 8px; background: #f3f7f2; }
 .map-road-theme-button { min-height: 25px; border: 0; border-radius: 5px; padding: 0 9px; background: transparent; color: #526257; font-size: 9px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: background .15s ease, color .15s ease; }
 .map-road-theme-button:hover { background: #e4ece2; }

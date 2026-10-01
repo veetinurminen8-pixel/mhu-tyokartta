@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">Musta ja sinisellä raidalla merkitty rumpuputki</title>
+  <g transform="rotate(-40 50 50)">
+    <path d="M19 34h64a12 12 0 0 1 0 32H19z" fill="#252a2d"/>
+    <path d="M19 34h64a12 12 0 0 1 0 32H19z" fill="none" stroke="#111618" stroke-width="2"/>
+    <path d="M26 34v32m6-32v32m6-32v32m6-32v32m6-32v32m6-32v32m6-32v32m6-32v32m6-32v32m6-32v32" fill="none" stroke="#60686c" stroke-width="2"/>
+    <path d="M27 35v30m6-30v30m6-30v30m6-30v30m6-30v30m6-30v30m6-30v30m6-30v30m6-30v30m6-30v30" fill="none" stroke="#171c1f" stroke-width="1"/>
+    <path d="M21 38h60" fill="none" stroke="#27b8e5" stroke-width="1.6"/>
+    <ellipse cx="19" cy="50" rx="7" ry="16" fill="#171c1f" stroke="#778084" stroke-width="2"/>
+    <ellipse cx="19" cy="50" rx="4.5" ry="12.5" fill="#090c0e"/>
+    <path d="M82 34c8 0 13 7 13 16s-5 16-13 16z" fill="#22282b" stroke="#111618" stroke-width="2"/>
+    <path d="M85 37v26m3-25v24m3-22v20" stroke="#5e676b" stroke-width="1.5"/>
+  </g>
+</svg>

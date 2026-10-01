@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">Tienkaide ja punainen rasti</title>
+  <path d="M22 53v33m56-33v33" fill="none" stroke="#53636a" stroke-linecap="round" stroke-width="8"/>
+  <path d="M9 39h82" fill="none" stroke="#34464e" stroke-linecap="round" stroke-width="16"/>
+  <path d="M9 39h82" fill="none" stroke="#aab8bc" stroke-linecap="round" stroke-width="9"/>
+  <path d="m42 21 16 16m0-16L42 37" fill="none" stroke="#d62828" stroke-linecap="round" stroke-width="7"/>
+</svg>

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f3">
+    <title>Työkartta | MHU</title>
+    <script src="auth-gate.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="styles.css?v=invasive-logo-background">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="rail" aria-label="Päävalikko">
+        <a class="brand-mark" href="#" aria-label="MHU työkartta">
+          <span class="brand-symbol">M</span>
+          <span class="brand-caption">MHU</span>
+        </a>
+        <div class="rail-divider"></div>
+        <button class="rail-button active" type="button" aria-label="Työkartta" title="Työkartta">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5 9 4l6 2.5L20.5 4v13.5L15 20l-6-2.5-5.5 2.5V6.5Z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
+        </button>
+        <button class="rail-button" type="button" aria-label="Työt" title="Työt" id="rail-tasks">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11v15H5V5h3Z"/><path d="M9 3h6v4H9zM8.5 12h7M8.5 16h7"/></svg>
+        </button>
+        <div class="rail-bottom">
+          <button class="rail-button" type="button" aria-label="Ohje" title="Ohje">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 4.2 1.6c-1 .9-1.9 1.2-1.9 2.7M12 16.7v.1"/></svg>
+          </button>
+          <div class="avatar" aria-label="Käyttäjä">MK</div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div class="topbar-title">
+            <div class="eyebrow">MAANTEIDEN HOITOURAKAT</div>
+            <h1>Työkartta</h1>
+          </div>
+          <div class="topbar-actions">
+            <div class="sync-status"><span class="status-dot"></span><span>Tiedot tallessa</span></div>
+            <span class="topbar-separator"></span>
+            <div class="user-info"><span class="user-name">Mikko Korhonen</span><span class="user-role">Työnjohto</span></div>
+            <div class="avatar avatar-large">MK</div>
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="page-heading">
+            <div>
+              <div class="breadcrumb">Työt <span>/</span> Karttanäkymä</div>
+              <div class="heading-row">
+                <h2>Tekemättömät työt</h2>
+                <span class="live-pill"><span></span> LIVE-KARTTA</span>
+              </div>
+              <p class="page-description">Näet valitun hoitourakan avoimet työt ja niiden sijainnit.</p>
+            </div>
+            <button class="primary-button" id="add-work-button" type="button">
+              <span class="plus-icon">+</span> Lisää työ
+            </button>
+          </div>
+
+          <section class="contract-card" aria-label="Valitse hoitourakka">
+            <div class="contract-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16"/><path d="m7 15 4-5 3 2 5-7"/><circle cx="7" cy="15" r="1"/><circle cx="11" cy="10" r="1"/><circle cx="14" cy="12" r="1"/><circle cx="19" cy="5" r="1"/></svg>
+            </div>
+            <div class="contract-details">
+              <label for="contract-select">VALITTU HOITOURAKKA</label>
+              <div class="select-wrap">
+                <select id="contract-select" aria-label="Valitse hoitourakka"></select>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
+              </div>
+              <div class="contract-meta"><span id="contract-roads"></span><span class="meta-dot">·</span><span id="contract-area"></span></div>
+            </div>
+            <div class="contract-summary">
+              <div class="summary-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11v15H5V5h3Z"/><path d="M9 3h6v4H9zM8.5 12h7M8.5 16h4"/></svg>
+              </div>
+              <div><strong id="contract-count">0</strong><span>avointa työtä</span></div>
+            </div>
+          </section>
+
+          <section class="dashboard-grid">
+            <section class="map-panel" aria-label="Hoitourakan kartta">
+              <div class="panel-heading map-heading">
+                <div>
+                  <h3>Urakan työkartta</h3>
+                  <p><span class="map-location-icon">⌖</span> <span id="map-contract-name"></span></p>
+                </div>
+                <div class="map-tools">
+                  <div class="map-road-theme-switcher" role="group" aria-label="Tien väriteema">
+                    <button class="map-road-theme-button active" type="button" data-road-theme="class" aria-pressed="true" title="Tiet väritetään tieluokan mukaan">Tieluokittain</button>
+                    <button class="map-road-theme-button" type="button" data-road-theme="mono" aria-pressed="false" title="Kaikki tiet samalla ruskealla värillä">Yksivärinen</button>
+                  </div>
+                  <button class="map-tool" id="locate-button" type="button" title="Näytä oma sijainti" aria-label="Näytä oma sijainti">◎</button>
+                  <button class="map-tool layers-button selected" id="layers-button" type="button" title="Karttatasot" aria-expanded="true">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>
+                  </button>
+                </div>
+              </div>
+              <section class="map-type-filters" aria-label="Kartalla näytettävät työtyypit">
+                <div class="map-filter-heading">
+                  <button class="map-filter-toggle" id="map-filter-toggle" type="button" aria-expanded="false" aria-controls="map-filter-options">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>
+                    <span id="map-filter-summary">Näytä kaikki työtyypit</span>
+                    <span class="map-filter-chevron" aria-hidden="true">⌄</span>
+                  </button>
+                </div>
+                <div class="map-filter-options" id="map-filter-options" hidden>
+                  <label class="map-filter-option map-filter-all"><input id="map-filter-all" type="checkbox" checked><span>Valitse kaikki</span></label>
+                  <div class="map-filter-list" id="map-filter-list"></div>
+                </div>
+              </section>
+              <div class="map-canvas" id="map-canvas">
+                <div id="leaflet-map" aria-label="OpenStreetMap-kartta ja Jämsän hoitourakan tieosuudet"></div>
+                <div class="map-picker-hint" id="map-picker-hint">Napauta karttaa työn sijainnin asettamiseksi</div>
+                <div class="map-compass" aria-hidden="true"><span>N</span><i>↑</i></div>
+                <div class="map-controls">
+                  <button class="zoom-button" id="zoom-in" type="button" aria-label="Lähennä">+</button>
+                  <button class="zoom-button" id="zoom-out" type="button" aria-label="Loitonna">−</button>
+                </div>
+                <div class="map-legend" id="map-legend-class"><span class="legend-marker"></span> Avoin työ <span class="legend-road legend-road-main"></span> Valtatie <span class="legend-road legend-road-regional"></span> Seutu-/yhdystie <span class="legend-road legend-road-minor"></span> Yhdystie</div>
+                <div class="map-legend" id="map-legend-mono" hidden><span class="legend-marker"></span> Avoin työ <span class="legend-road legend-road-mono"></span> Jämsä 23–28 tieosuus</div>
+                <div class="map-theme-switcher" role="group" aria-label="Karttateema">
+                  <button class="map-theme-button active" type="button" data-map-theme="osm" aria-pressed="true">OpenStreetMap</button>
+                  <button class="map-theme-button" type="button" data-map-theme="basemap" aria-pressed="false">Taustakartta</button>
+                </div>
+                <div class="map-attribution"><a id="basemap-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a><span id="basemap-provider-credit" hidden></span><span>·</span><a href="https://avoinapi.vaylapilvi.fi/vaylatiedot/ows?service=WFS&amp;request=GetCapabilities" target="_blank" rel="noreferrer">Tieosuudet: Väylävirasto</a></div>
+              </div>
+              <div class="map-footer">
+                <span><span class="footer-check">✓</span> Urakka Jämsä 23–28 · sopimuskausi 2023–2028</span>
+                <span>Väyläviraston aineisto 1.10.2025, päivitetty 2.2.2026</span>
+              </div>
+            </section>
+
+            <aside class="work-panel" id="work-panel" aria-label="Urakan avoimet työt">
+              <div class="panel-heading work-heading">
+                <div>
+                  <h3>Avoimet työt <span class="task-count-badge" id="task-count-badge">0</span></h3>
+                  <p>Valmiit työt poistuvat kartalta.</p>
+                </div>
+                <button class="sort-button" type="button" id="sort-button" aria-label="Järjestä työt">↕</button>
+              </div>
+              <div class="task-list" id="task-list"></div>
+              <div class="empty-state" id="empty-state" hidden>
+                <div class="empty-icon">✓</div>
+                <strong>Kaikki työt tehty!</strong>
+                <p>Tällä urakalla ei ole avoimia töitä. Uusi työ ilmestyy tänne, kun se lisätään kartalle.</p>
+                <button class="text-button" id="empty-add-button" type="button">Lisää uusi työ <span>→</span></button>
+              </div>
+              <button class="panel-add-button" id="panel-add-button" type="button"><span>+</span> Lisää uusi työ kartalle</button>
+              <div class="panel-footnote"><span class="footnote-lock">◈</span> Työt näkyvät vain valitun hoitourakan alueella</div>
+            </aside>
+          </section>
+
+          <footer class="page-footer">
+            <span>MHU Työkartta <span class="footer-version">PROTOTYYPPI 0.1</span></span>
+            <span>Demo tallentaa muutokset tähän selaimeen.</span>
+          </footer>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal-backdrop" hidden>
+      <section class="work-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-header">
+          <div><div class="eyebrow" id="modal-eyebrow">UUSI MERKINTÄ KARTALLE</div><h2 id="modal-title">Lisää työ</h2></div>
+          <button class="close-button" id="close-modal" type="button" aria-label="Sulje">×</button>
+        </div>
+        <form id="work-form">
+          <div class="modal-contract-row"><span class="mini-road-icon">↗</span><span>Työ lisätään urakkaan</span><strong id="modal-contract-name"></strong></div>
+          <label class="field-label" for="work-type">Työn tyyppi <span class="required">*</span></label>
+          <select class="form-control" id="work-type" required>
+            <option value="sign">Liikennemerkki</option>
+            <option value="guardrail-damage">Kaidevaurio</option>
+            <option value="pavement-damage">Päällystevaurio</option>
+            <option value="road-settlement">Tien painuma / sortuma</option>
+            <option value="culvert">Rumpuhavainto</option>
+            <option value="rest-area">Pysäkki / levähdysalue</option>
+            <option value="hazardous-tree">Vaarallinen puu</option>
+            <option value="roadwork">Tietyö</option>
+            <option value="oil-gravel">Paikkaustarve</option>
+            <option value="invasive-species">Vieraslajihavainto</option>
+            <option value="other">Muu työ</option>
+          </select>
+
+          <div class="sign-fields" id="sign-fields">
+            <label class="field-label" for="sign-id">Liikennemerkin tunnus <span class="required">*</span></label>
+            <select class="form-control" id="sign-id">
+              <option value="">Valitse liikennemerkin tunnus</option>
+              <optgroup label="Varoitusmerkit"><option value="A1.1 – mutka">A1.1 – Mutka</option><option value="A1.2 – mutka">A1.2 – Mutka</option><option value="A10 – töyssyjä">A10 – Töyssyjä</option><option value="A15 – suojatien ennakkovaroitus">A15 – Suojatien ennakkovaroitus</option><option value="A17 – lapsia">A17 – Lapsia</option><option value="A20.1 – hirvi">A20.1 – Hirvi</option><option value="A20.2 – poro">A20.2 – Poro</option><option value="A20.3 – kauriseläin">A20.3 – Kauriseläin</option><option value="A21 – tienristeys">A21 – Tienristeys</option><option value="A23 – liikennevalot">A23 – Liikennevalot</option></optgroup>
+              <optgroup label="Etuajo-oikeus- ja väistämismerkit"><option value="B5 – väistämisvelvollisuus risteyksessä">B5 – Väistämisvelvollisuus risteyksessä</option><option value="B6 – pakollinen pysäyttäminen">B6 – Pakollinen pysäyttäminen</option><option value="B7 – väistämisvelvollisuus pyöräilijän tienylityspaikassa">B7 – Väistämisvelvollisuus pyöräilijän tienylityspaikassa</option></optgroup>
+              <optgroup label="Kielto- ja rajoitusmerkit"><option value="C1 – ajoneuvolla ajo kielletty">C1 – Ajoneuvolla ajo kielletty</option><option value="C32 – nopeusrajoitus">C32 – Nopeusrajoitus</option><option value="C37 – pysäyttäminen kielletty">C37 – Pysäyttäminen kielletty</option></optgroup>
+              <optgroup label="Määräys- ja opastusmerkit"><option value="D1.1 – pakollinen ajosuunta">D1.1 – Pakollinen ajosuunta</option><option value="D1.2 – pakollinen ajosuunta">D1.2 – Pakollinen ajosuunta</option><option value="D1.3 – pakollinen ajosuunta">D1.3 – Pakollinen ajosuunta</option><option value="E1 – suojatie">E1 – Suojatie</option><option value="E2 – pysäköintipaikka">E2 – Pysäköintipaikka</option></optgroup>
+              <option value="Muu / tunnistamaton">Muu / tunnistamaton</option>
+            </select>
+            <div class="sign-search-row">
+              <input class="form-control" id="sign-search-query" type="search" placeholder="Hae tunnuksella tai nimellä" aria-label="Hae liikennemerkkiä tunnuksella tai nimellä">
+              <button class="outline-button" id="sign-search-button" type="button">Hae</button>
+            </div>
+            <a class="sign-catalog-link" href="https://vayla.fi/vaylista/liikennemerkit/kaikki-merkit" target="_blank" rel="noreferrer">Avaa Väyläviraston merkkikuvasto ↗</a>
+            <p class="sign-search-status" id="sign-search-status" aria-live="polite"></p>
+          </div>
+
+          <label class="field-label" for="work-road-display">Tieosuus <span class="required">*</span></label>
+          <div class="form-control road-display placeholder" id="work-road-display">Tieosuus täyttyy automaattisesti sijainnin valinnasta</div>
+          <input type="hidden" id="work-road" required>
+
+          <label class="field-label" for="work-side">Tien puoli</label>
+          <select class="form-control" id="work-side">
+            <option value="">Ei määritetty</option>
+            <option value="right">Oikea</option>
+            <option value="left">Vasen</option>
+          </select>
+
+          <div class="field-label location-label">Sijainti <span class="required">*</span><span class="field-note">Napauta karttaa tai kirjoita paikka</span></div>
+          <div class="location-row">
+            <div class="form-control location-display placeholder" id="work-location-display" tabindex="-1">
+              <span class="location-primary" id="work-location-primary">Valitse sijainti kartalta</span>
+              <span class="location-secondary" id="work-location-secondary"></span>
+            </div>
+            <button class="outline-button" id="pick-location" type="button" title="Valitse sijainti kartalta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Kartalta</span></button>
+          </div>
+
+          <label class="field-label" for="work-description">Työn kuvaus <span class="field-note">Vapaaehtoinen</span></label>
+          <textarea class="form-control description-input" id="work-description" rows="3" placeholder="Voit lisätä tarkemman kuvauksen..."></textarea>
+
+          <div class="field-label photo-label">Kuva <span class="field-note">Voit lisätä kuvan kohteesta</span></div>
+          <label class="photo-upload" id="photo-upload" for="work-photo">
+            <input id="work-photo" type="file" accept="image/*">
+            <span class="photo-preview" id="photo-preview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/></svg></span>
+            <span class="photo-copy"><strong id="photo-copy-title">Lisää kuva</strong><span id="photo-copy-hint">PNG, JPG tai HEIC</span></span>
+            <span class="upload-action">Selaa</span>
+          </label>
+
+          <div class="form-error" id="form-error" role="alert" hidden></div>
+          <div class="modal-actions">
+            <button class="cancel-button" id="cancel-modal" type="button">Peruuta</button>
+            <button class="primary-button save-button" id="save-work-button" type="submit"><span>+</span> Lisää työ kartalle</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="jamsa-roads.js"></script>
+    <script src="app.js?v=generated-bus-shelter-icon"></script>
+  </body>
+</html>

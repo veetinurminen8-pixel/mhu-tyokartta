@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">Kuusi harmaalla jalalla</title>
+  <path d="M46 84h8l3 10H43z" fill="#80502f"/>
+  <path d="m50 10 16 24h-9l20 23H61l20 23H19l20-23H23l20-23h-9z" fill="#398a3b" stroke="#286b33" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m50 16 10 17h-8l17 21H53l17 21H28l17-21H34l17-21h-8z" fill="#56ad45"/>
+</svg>

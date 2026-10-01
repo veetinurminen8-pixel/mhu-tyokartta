@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">Sininen pysäkkimökki</title>
+  <path d="M12 43 50 12l38 31v43H12z" fill="#4d87a8" stroke="#315d77" stroke-linejoin="round" stroke-width="4"/>
+  <path d="M19 43 50 18l31 25v4H19z" fill="#75a9c4"/>
+  <path d="M26 48h48v38H26z" fill="#386f8e"/>
+  <path d="M34 53h22v33H34z" fill="#d8e7ec"/>
+  <path d="M60 53h10v18H60z" fill="#b9d0da"/>
+  <path d="M15 86h70" fill="none" stroke="#56636a" stroke-linecap="round" stroke-width="4"/>
+</svg>

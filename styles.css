@@ -74,6 +74,12 @@ button { color: inherit; }
 .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1fr) 322px; gap: 17px; align-items: stretch; min-height: 499px; }
 .map-panel, .work-panel { background: #fff; border: 1px solid #e7ebe5; border-radius: 11px; overflow: hidden; box-shadow: 0 2px 8px #28372904; }
 .map-panel { min-width: 0; display: flex; flex-direction: column; }
+.map-panel:fullscreen,
+.map-panel.map-panel-fullscreen { width: 100vw; height: 100vh; border-radius: 0; border: 0; }
+.map-panel:fullscreen .map-canvas,
+.map-panel.map-panel-fullscreen .map-canvas { min-height: 0; }
+.map-panel:fullscreen .map-footer,
+.map-panel.map-panel-fullscreen .map-footer { display: none; }
 .panel-heading { display: flex; align-items: center; justify-content: space-between; }
 .map-heading { min-height: 65px; padding: 12px 17px; }
 .panel-heading h3 { font: 700 12px Manrope, sans-serif; margin: 0; letter-spacing: -.15px; }

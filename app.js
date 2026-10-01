@@ -1103,6 +1103,36 @@ document.querySelector("#layers-button").addEventListener("click", event => {
   showToast(visible ? "Urakan tieosuudet ja työt näytetään." : "Urakan tieosuudet ja työmerkit piilotettu.");
 });
 
+const mapPanel = document.querySelector(".map-panel");
+const fullscreenButton = document.querySelector("#fullscreen-button");
+
+function isMapFullscreen() {
+  return document.fullscreenElement === mapPanel;
+}
+
+function updateFullscreenButton() {
+  const active = isMapFullscreen();
+  fullscreenButton.setAttribute("aria-pressed", String(active));
+  fullscreenButton.classList.toggle("selected", active);
+  fullscreenButton.title = active ? "Poistu koko näytöstä" : "Koko näyttö";
+  fullscreenButton.setAttribute("aria-label", active ? "Poistu kartan koko näytön tilasta" : "Näytä kartta koko näytöllä");
+  mapPanel.classList.toggle("map-panel-fullscreen", active);
+  window.setTimeout(() => map.invalidateSize(), 50);
+}
+
+if (fullscreenButton && mapPanel.requestFullscreen) {
+  fullscreenButton.addEventListener("click", () => {
+    if (isMapFullscreen()) {
+      document.exitFullscreen();
+    } else {
+      mapPanel.requestFullscreen().catch(() => showToast("Koko näytön tilaa ei voitu avata."));
+    }
+  });
+  document.addEventListener("fullscreenchange", updateFullscreenButton);
+} else if (fullscreenButton) {
+  fullscreenButton.hidden = true;
+}
+
 document.querySelector("#zoom-in").addEventListener("click", () => map.zoomIn());
 document.querySelector("#zoom-out").addEventListener("click", () => map.zoomOut());
 document.querySelectorAll(".map-theme-button").forEach(button => {

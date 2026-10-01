@@ -837,7 +837,11 @@ contractSelect.addEventListener("change", () => {
   contractSelect.value = contract.id;
 });
 
-document.querySelectorAll("#add-work-button, #panel-add-button, #empty-add-button, #fullscreen-add-work-button").forEach(button => button.addEventListener("click", () => openModal()));
+document.querySelectorAll("#add-work-button, #panel-add-button, #empty-add-button").forEach(button => button.addEventListener("click", () => openModal()));
+document.querySelector("#fullscreen-add-work-button").addEventListener("click", () => {
+  openModal();
+  document.querySelector("#pick-location").click();
+});
 document.querySelector("#close-modal").addEventListener("click", closeModal);
 document.querySelector("#cancel-modal").addEventListener("click", closeModal);
 modalBackdrop.addEventListener("click", event => {

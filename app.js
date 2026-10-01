@@ -1110,9 +1110,13 @@ document.querySelector("#layers-button").addEventListener("click", event => {
 const mapPanel = document.querySelector(".map-panel");
 const fullscreenButton = document.querySelector("#fullscreen-button");
 const fullscreenAddWorkButton = document.querySelector("#fullscreen-add-work-button");
+// Esim. iPhonen Safari ei tue Fullscreen-rajapintaa tavallisille elementeille,
+// joten sille käytetään CSS-pohjaista "näennäistä" koko näytön tilaa natiivin API:n sijaan.
+const supportsNativeFullscreen = typeof mapPanel.requestFullscreen === "function";
+let fakeFullscreenActive = false;
 
 function isMapFullscreen() {
-  return document.fullscreenElement === mapPanel;
+  return document.fullscreenElement === mapPanel || fakeFullscreenActive;
 }
 
 function updateFullscreenButton() {
@@ -1121,7 +1125,9 @@ function updateFullscreenButton() {
   fullscreenButton.classList.toggle("selected", active);
   fullscreenButton.title = active ? "Poistu koko näytöstä" : "Koko näyttö";
   fullscreenButton.setAttribute("aria-label", active ? "Poistu kartan koko näytön tilasta" : "Näytä kartta koko näytöllä");
-  mapPanel.classList.toggle("map-panel-fullscreen", active);
+  mapPanel.classList.toggle("map-panel-fullscreen", document.fullscreenElement === mapPanel);
+  mapPanel.classList.toggle("map-panel-fullscreen-fallback", fakeFullscreenActive);
+  document.body.classList.toggle("map-fullscreen-fallback-active", fakeFullscreenActive);
   fullscreenAddWorkButton.hidden = !active;
   // Koko näytön tilassa selain näyttää vain fullscreen-elementin jälkeläiset,
   // joten modaali-ikkuna pitää siirtää hetkeksi kartan sisään, jotta "Lisää työ" toimii myös silloin.
@@ -1129,17 +1135,28 @@ function updateFullscreenButton() {
   window.setTimeout(() => map.invalidateSize(), 50);
 }
 
-if (fullscreenButton && mapPanel.requestFullscreen) {
+if (fullscreenButton) {
   fullscreenButton.addEventListener("click", () => {
-    if (isMapFullscreen()) {
-      document.exitFullscreen();
+    if (supportsNativeFullscreen) {
+      if (document.fullscreenElement === mapPanel) {
+        document.exitFullscreen();
+      } else {
+        mapPanel.requestFullscreen().catch(() => showToast("Koko näytön tilaa ei voitu avata."));
+      }
     } else {
-      mapPanel.requestFullscreen().catch(() => showToast("Koko näytön tilaa ei voitu avata."));
+      fakeFullscreenActive = !fakeFullscreenActive;
+      updateFullscreenButton();
     }
   });
-  document.addEventListener("fullscreenchange", updateFullscreenButton);
-} else if (fullscreenButton) {
-  fullscreenButton.hidden = true;
+  if (supportsNativeFullscreen) {
+    document.addEventListener("fullscreenchange", updateFullscreenButton);
+  }
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && fakeFullscreenActive) {
+      fakeFullscreenActive = false;
+      updateFullscreenButton();
+    }
+  });
 }
 
 document.querySelector("#zoom-in").addEventListener("click", () => map.zoomIn());

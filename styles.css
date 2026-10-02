@@ -88,6 +88,15 @@ button { color: inherit; }
 .map-panel.map-panel-fullscreen .map-canvas { min-height: 0; }
 .map-panel:fullscreen .map-footer,
 .map-panel.map-panel-fullscreen .map-footer { display: none; }
+.map-panel:fullscreen .map-heading,
+.map-panel.map-panel-fullscreen .map-heading,
+.map-panel.map-panel-fullscreen-fallback .map-heading { min-height: 0; padding: 8px 12px; flex-wrap: nowrap; justify-content: flex-end; }
+.map-panel:fullscreen .map-heading > div:first-child,
+.map-panel:fullscreen .map-road-theme-switcher,
+.map-panel.map-panel-fullscreen .map-heading > div:first-child,
+.map-panel.map-panel-fullscreen .map-road-theme-switcher,
+.map-panel.map-panel-fullscreen-fallback .map-heading > div:first-child,
+.map-panel.map-panel-fullscreen-fallback .map-road-theme-switcher { display: none; }
 .map-panel.map-panel-fullscreen-fallback { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 2000; border-radius: 0; border: 0; margin: 0; }
 .map-panel.map-panel-fullscreen-fallback .map-canvas { min-height: 0; }
 .map-panel.map-panel-fullscreen-fallback .map-footer { display: none; }

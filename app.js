@@ -1110,6 +1110,7 @@ document.querySelector("#layers-button").addEventListener("click", event => {
 const mapPanel = document.querySelector(".map-panel");
 const fullscreenButton = document.querySelector("#fullscreen-button");
 const fullscreenAddWorkButton = document.querySelector("#fullscreen-add-work-button");
+const printMapButton = document.querySelector("#print-map-button");
 // Esim. iPhonen Safari ei tue Fullscreen-rajapintaa tavallisille elementeille,
 // joten sille käytetään CSS-pohjaista "näennäistä" koko näytön tilaa natiivin API:n sijaan.
 const supportsNativeFullscreen = typeof mapPanel.requestFullscreen === "function";
@@ -1158,6 +1159,12 @@ if (fullscreenButton) {
     }
   });
 }
+
+printMapButton.addEventListener("click", () => {
+  map.invalidateSize();
+  window.setTimeout(() => window.print(), 250);
+});
+window.addEventListener("afterprint", () => window.setTimeout(() => map.invalidateSize(), 50));
 
 document.querySelector("#zoom-in").addEventListener("click", () => map.zoomIn());
 document.querySelector("#zoom-out").addEventListener("click", () => map.zoomOut());

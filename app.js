@@ -86,7 +86,7 @@ const signImageFiles = {
   E2: "E2.svg"
 };
 const signImageBaseUrl = "https://raw.githubusercontent.com/finnishtransportagency/liikennemerkit/35be7a6593e70c8ed5f4e3ef54372d69a3fef558/collections/new_signs/svg/";
-const invasiveSpeciesImageUrl = "invasive-species-icon.png?v=transparent";
+const invasiveSpeciesImageUrl = "invasive-species-icon.png?v=transparent2";
 const taskTypes = {
   sign: { label: "Liikennemerkki", icon: "⚠", className: "" },
   "guardrail-damage": { label: "Kaidevaurio", icon: "!", className: "guardrail-damage-task" },

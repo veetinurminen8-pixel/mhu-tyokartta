@@ -1165,6 +1165,12 @@ printMapButton.addEventListener("click", () => {
   window.print();
 });
 window.addEventListener("afterprint", () => window.setTimeout(() => map.invalidateSize(), 50));
+document.addEventListener("mhu-authenticated", () => {
+  requestAnimationFrame(() => {
+    map.invalidateSize({ pan: false });
+    requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+  });
+});
 
 document.querySelector("#zoom-in").addEventListener("click", () => map.zoomIn());
 document.querySelector("#zoom-out").addEventListener("click", () => map.zoomOut());

@@ -36,7 +36,7 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    html.auth-locked body > *:not(#auth-gate-overlay) { display: none !important; }
+    html.auth-locked body > *:not(#auth-gate-overlay) { visibility: hidden !important; }
     #auth-gate-overlay {
       position: fixed; inset: 0; z-index: 999999;
       display: flex; align-items: center; justify-content: center;
@@ -76,6 +76,7 @@
         localStorage.setItem(unlockStorageKey, "1");
         document.documentElement.classList.remove("auth-locked");
         overlay.remove();
+        document.dispatchEvent(new Event("mhu-authenticated"));
       } else {
         error.hidden = false;
         input.value = "";

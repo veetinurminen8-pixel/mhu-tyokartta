@@ -1035,63 +1035,78 @@ form.addEventListener("submit", event => {
   }
 });
 
+let locationWatchId = null;
+let followUser = false;
+let locationMarker = null;
+let locationCircle = null;
+let firstFix = true;
+
+function stopLocationTracking(button) {
+  if (locationWatchId !== null) navigator.geolocation.clearWatch(locationWatchId);
+  locationWatchId = null;
+  followUser = false;
+  currentLocationLayer.clearLayers();
+  locationMarker = null;
+  locationCircle = null;
+  button.classList.remove("selected");
+  button.setAttribute("aria-pressed", "false");
+}
+
+function showUserPosition(position) {
+  const { latitude, longitude, accuracy } = position.coords;
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+      latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) return;
+  const location = L.latLng(latitude, longitude);
+  if (!locationMarker) {
+    locationCircle = L.circle(location, { radius: accuracy || 0, color: "#2878d0", weight: 1, fillColor: "#3989e5", fillOpacity: 0.12, interactive: false }).addTo(currentLocationLayer);
+    locationMarker = L.circleMarker(location, { radius: 8, color: "#fff", weight: 3, fillColor: "#2878d0", fillOpacity: 1, interactive: false }).addTo(currentLocationLayer);
+  } else {
+    locationMarker.setLatLng(location);
+    locationCircle.setLatLng(location);
+    locationCircle.setRadius(accuracy || 0);
+  }
+  if (firstFix) {
+    firstFix = false;
+    map.flyTo(location, Math.max(map.getZoom(), 16));
+    showToast(Number.isFinite(accuracy) ? `Sijaintiseuranta päällä (tarkkuus noin ±${Math.round(accuracy)} m).` : "Sijaintiseuranta päällä.");
+  } else if (followUser) {
+    map.panTo(location, { animate: true, duration: 0.5 });
+  }
+}
+
 document.querySelector("#locate-button").addEventListener("click", event => {
   const button = event.currentTarget;
   if (!navigator.geolocation) {
     showToast("Sijainnin määritys ei ole selaimessasi käytettävissä.");
     return;
   }
+  if (locationWatchId !== null) {
+    stopLocationTracking(button);
+    showToast("Sijaintiseuranta pysäytetty.");
+    return;
+  }
 
-  button.disabled = true;
+  firstFix = true;
+  followUser = true;
+  button.classList.add("selected");
+  button.setAttribute("aria-pressed", "true");
   showToast("Haetaan sijaintiasi…");
-  navigator.geolocation.getCurrentPosition(position => {
-    button.disabled = false;
-    const { latitude, longitude, accuracy } = position.coords;
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
-        latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-      showToast("Selaimelta saatiin virheellinen sijainti.");
-      return;
+  locationWatchId = navigator.geolocation.watchPosition(showUserPosition, error => {
+    if (error.code === 1 || error.code === 2) {
+      stopLocationTracking(button);
+      showToast(error.code === 1
+        ? "Sijaintilupa evättiin. Salli sijainnin käyttö selaimen asetuksista."
+        : "Sijaintia ei saatu määritettyä. Tarkista laitteen sijaintipalvelut.");
     }
-
-    const location = L.latLng(latitude, longitude);
-    currentLocationLayer.clearLayers();
-    if (Number.isFinite(accuracy) && accuracy > 0) {
-      L.circle(location, {
-        radius: accuracy,
-        color: "#2878d0",
-        weight: 1,
-        fillColor: "#3989e5",
-        fillOpacity: 0.12,
-        interactive: false
-      }).addTo(currentLocationLayer);
-    }
-    L.circleMarker(location, {
-      radius: 8,
-      color: "#fff",
-      weight: 3,
-      fillColor: "#2878d0",
-      fillOpacity: 1,
-      interactive: false
-    }).addTo(currentLocationLayer);
-    map.flyTo(location, Math.max(map.getZoom(), 15));
-    showToast(Number.isFinite(accuracy) && accuracy > 0
-      ? `Oma sijaintisi näkyy kartalla (tarkkuus noin ±${Math.round(accuracy)} m).`
-      : "Oma sijaintisi näkyy kartalla.");
-  }, error => {
-    button.disabled = false;
-    const message = {
-      1: "Sijaintilupa evättiin. Salli sijainnin käyttö selaimen asetuksista.",
-      2: "Sijaintia ei saatu määritettyä. Tarkista laitteen sijaintipalvelut.",
-      3: "Sijainnin haku aikakatkaistiin. Yritä uudelleen."
-    }[error.code] || "Sijainnin haku epäonnistui.";
-    showToast(message);
   }, {
     enableHighAccuracy: true,
-    timeout: 30000,
+    timeout: 15000,
     maximumAge: 0
   });
 });
 
+// Käyttäjän siirtäessä karttaa itse automaattinen seuranta keskeytyy; uusi napautus pysäyttää seurannan.
+map.on("dragstart", () => { followUser = false; });
 document.querySelector("#layers-button").addEventListener("click", event => {
   const button = event.currentTarget;
   const visible = button.getAttribute("aria-expanded") !== "true";

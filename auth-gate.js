@@ -5,7 +5,8 @@
 // vahingossa tai sivullisille, kunnes vahvempi suojaus (esim. Cloudflare Access)
 // otetaan käyttöön.
 (function () {
-  const unlockStorageKey = "mhu-tyokartta-unlocked-v1";
+  const unlockStorageKey = "mhu-tyokartta-unlocked-v2";
+  const allowedUsername = "veeti nurminen";
   const passwordHashHex = "c3976205e7ef1917478b29af460fe0b7cc1f2bb2d8ae155dc02d5ccb7417ba05";
 
   if (localStorage.getItem(unlockStorageKey) === "1") return;
@@ -23,10 +24,13 @@
   overlay.innerHTML = `
     <form id="auth-gate-form">
       <h1>Kirjaudu sisään</h1>
-      <p>Työkartta on suojattu. Syötä salasana jatkaaksesi.</p>
-      <input type="password" id="auth-gate-input" autocomplete="current-password" autofocus required>
+      <p>Työkartta on suojattu. Syötä käyttäjätunnus ja salasana jatkaaksesi.</p>
+      <label for="auth-gate-username">Käyttäjätunnus</label>
+      <input type="text" id="auth-gate-username" autocomplete="username" autofocus required>
+      <label for="auth-gate-input">Salasana</label>
+      <input type="password" id="auth-gate-input" autocomplete="current-password" required>
       <button type="submit">Jatka</button>
-      <p id="auth-gate-error" hidden>Väärä salasana. Yritä uudelleen.</p>
+      <p id="auth-gate-error" hidden>Virheellinen käyttäjätunnus tai salasana. Yritä uudelleen.</p>
     </form>
   `;
 
@@ -45,6 +49,7 @@
     }
     #auth-gate-overlay h1 { font-size: 1.25rem; margin: 0; }
     #auth-gate-overlay p { margin: 0; color: #555; font-size: 0.9rem; }
+    #auth-gate-overlay label { margin-bottom: -0.5rem; color: #38483e; font-size: 0.85rem; font-weight: 600; }
     #auth-gate-overlay input {
       padding: 0.6rem 0.75rem; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem;
     }
@@ -60,19 +65,21 @@
     document.head.appendChild(style);
     document.body.appendChild(overlay);
     const form = document.querySelector("#auth-gate-form");
+    const username = document.querySelector("#auth-gate-username");
     const input = document.querySelector("#auth-gate-input");
     const error = document.querySelector("#auth-gate-error");
     form.addEventListener("submit", async event => {
       event.preventDefault();
+      const enteredUsername = username.value.trim().replace(/\s+/g, " ").toLocaleLowerCase("fi-FI");
       const enteredHash = await sha256Hex(input.value);
-      if (enteredHash === passwordHashHex) {
+      if (enteredUsername === allowedUsername && enteredHash === passwordHashHex) {
         localStorage.setItem(unlockStorageKey, "1");
         document.documentElement.classList.remove("auth-locked");
         overlay.remove();
       } else {
         error.hidden = false;
         input.value = "";
-        input.focus();
+        username.focus();
       }
     });
   });

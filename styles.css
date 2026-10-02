@@ -78,6 +78,7 @@ button { color: inherit; }
 .contract-summary strong { display: block; font: 700 18px Manrope, sans-serif; line-height: 1; }
 .contract-summary span { display: block; color: #8b958e; font-size: 9px; margin-top: 4px; }
 .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1fr) 322px; gap: 17px; align-items: stretch; min-height: 499px; }
+.dashboard-grid.work-layout-below { grid-template-columns: minmax(0, 1fr); }
 .map-panel, .work-panel { background: #fff; border: 1px solid #e7ebe5; border-radius: 11px; overflow: hidden; box-shadow: 0 2px 8px #28372904; }
 .map-panel { min-width: 0; display: flex; flex-direction: column; }
 .map-panel:fullscreen,
@@ -164,6 +165,12 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .work-panel { display: flex; flex-direction: column; min-height: 499px; }
 .work-heading { min-height: 65px; padding: 12px 15px; border-bottom: 1px solid #edf0ec; }
 .work-heading h3 { display: flex; align-items: center; gap: 7px; }
+.work-heading-actions { display: flex; align-items: center; gap: 7px; }
+.work-layout-switcher { display: flex; gap: 2px; padding: 3px; border: 1px solid #e0e6de; border-radius: 7px; background: #f3f7f2; }
+.work-layout-button { min-height: 24px; padding: 0 8px; border: 0; border-radius: 5px; background: transparent; color: #526257; font-size: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.work-layout-button.active { background: #fff; color: var(--green); box-shadow: 0 1px 3px #25392a1f; }
+.dashboard-grid.work-layout-below .work-panel { min-height: 0; }
+.dashboard-grid.work-layout-below .task-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 15px; }
 .task-count-badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; background: #eff4ee; color: #59745f; border-radius: 10px; font: 700 9px "DM Sans", sans-serif; }
 .sort-button { border: 0; background: transparent; width: 27px; height: 27px; border-radius: 6px; color: #859087; font-size: 17px; cursor: pointer; }
 .sort-button:hover { background: #f4f6f3; }
@@ -426,4 +433,12 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
   .map-canvas { flex: 1; min-height: 0; height: auto; overflow: hidden; }
   #leaflet-map, #leaflet-map .leaflet-container, #leaflet-map .leaflet-tile-pane, #leaflet-map .leaflet-tile { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .map-legend { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+
+@media (max-width: 800px) {
+  .dashboard-grid.work-layout-below .task-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 540px) {
+  .dashboard-grid.work-layout-below .task-list { grid-template-columns: 1fr; }
 }

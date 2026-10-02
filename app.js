@@ -1195,6 +1195,25 @@ document.querySelector("#sort-button").addEventListener("click", () => {
   renderTasks();
   showToast("Työt järjestetty uudelleen.");
 });
+const dashboardGrid = document.querySelector(".dashboard-grid");
+const workLayoutStorageKey = "mhu-tyokartta-work-layout-v1";
+const workLayoutButtons = document.querySelectorAll(".work-layout-button");
+function setWorkLayout(layout) {
+  const showBelow = layout === "below";
+  dashboardGrid.classList.toggle("work-layout-below", showBelow);
+  workLayoutButtons.forEach(button => {
+    const selected = button.dataset.workLayout === layout;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  localStorage.setItem(workLayoutStorageKey, layout);
+  window.setTimeout(() => map.invalidateSize(), 50);
+}
+const savedWorkLayout = localStorage.getItem(workLayoutStorageKey);
+setWorkLayout(savedWorkLayout === "below" ? "below" : "side");
+workLayoutButtons.forEach(button => {
+  button.addEventListener("click", () => setWorkLayout(button.dataset.workLayout));
+});
 document.querySelector("#rail-tasks").addEventListener("click", () => document.querySelector("#work-panel").scrollIntoView({ behavior: "smooth", block: "center" }));
 const helpBackdrop = document.querySelector("#help-backdrop");
 const helpButton = document.querySelector("#help-button");
@@ -1217,8 +1236,9 @@ document.querySelector("#profile-menu-button").addEventListener("click", event =
   menu.hidden = expanded;
 });
 document.querySelector("#logout-button").addEventListener("click", () => {
+  localStorage.removeItem("mhu-tyokartta-unlocked-v1");
   localStorage.removeItem("mhu-tyokartta-unlocked-v2");
-  window.location.reload();
+  window.location.replace(`${window.location.pathname}?signed-out=${Date.now()}`);
 });
 document.addEventListener("click", event => {
   const button = document.querySelector("#profile-menu-button");

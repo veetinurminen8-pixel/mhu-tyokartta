@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f5f6f3">
     <title>Työkartta | MHU</title>
-    <script src="auth-gate.js"></script>
+    <script src="auth-gate.js?v=logout-layout-fix"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="styles.css?v=invasive-logo-background">
+    <link rel="stylesheet" href="styles.css?v=work-layout-toggle">
   </head>
   <body>
     <div class="app-shell">
@@ -150,7 +150,13 @@
                   <h3>Avoimet työt <span class="task-count-badge" id="task-count-badge">0</span></h3>
                   <p>Valmiit työt poistuvat kartalta.</p>
                 </div>
-                <button class="sort-button" type="button" id="sort-button" aria-label="Järjestä työt">↕</button>
+                <div class="work-heading-actions">
+                  <div class="work-layout-switcher" role="group" aria-label="Avoimien töiden sijainti">
+                    <button type="button" class="work-layout-button active" data-work-layout="side" aria-pressed="true">Vieressä</button>
+                    <button type="button" class="work-layout-button" data-work-layout="below" aria-pressed="false">Alla</button>
+                  </div>
+                  <button class="sort-button" type="button" id="sort-button" aria-label="Järjestä työt">↕</button>
+                </div>
               </div>
               <div class="task-list" id="task-list"></div>
               <div class="empty-state" id="empty-state" hidden>
@@ -270,6 +276,6 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="jamsa-roads.js"></script>
-    <script src="app.js?v=generated-bus-shelter-icon"></script>
+    <script src="app.js?v=logout-layout-fix"></script>
   </body>
 </html>

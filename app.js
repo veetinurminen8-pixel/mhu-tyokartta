@@ -1162,7 +1162,7 @@ if (fullscreenButton) {
 
 printMapButton.addEventListener("click", () => {
   map.invalidateSize();
-  window.setTimeout(() => window.print(), 250);
+  window.print();
 });
 window.addEventListener("afterprint", () => window.setTimeout(() => map.invalidateSize(), 50));
 

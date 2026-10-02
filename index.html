@@ -24,10 +24,14 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11v15H5V5h3Z"/><path d="M9 3h6v4H9zM8.5 12h7M8.5 16h7"/></svg>
         </button>
         <div class="rail-bottom">
-          <button class="rail-button" type="button" aria-label="Ohje" title="Ohje">
+          <button class="rail-button" type="button" aria-label="Ohje" title="Ohje" id="help-button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 4.2 1.6c-1 .9-1.9 1.2-1.9 2.7M12 16.7v.1"/></svg>
           </button>
-          <div class="avatar" aria-label="Käyttäjä">MK</div>
+          <button class="avatar profile-menu-button" type="button" aria-label="Veeti Nurminen, avaa käyttäjävalikko" aria-expanded="false" aria-controls="profile-menu" id="profile-menu-button">VN</button>
+          <div class="profile-menu" id="profile-menu" hidden>
+            <strong>Veeti Nurminen</strong>
+            <button type="button" id="logout-button">Kirjaudu ulos</button>
+          </div>
         </div>
       </aside>
 
@@ -246,6 +250,21 @@
             <button class="primary-button save-button" id="save-work-button" type="submit"><span>+</span> Lisää työ kartalle</button>
           </div>
         </form>
+      </section>
+    </div>
+    <div class="help-backdrop" id="help-backdrop" hidden>
+      <section class="help-dialog" role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <div class="modal-header">
+          <div><div class="eyebrow">MHU TYÖKARTTA</div><h2 id="help-title">Ohje</h2></div>
+          <button class="close-button" id="close-help-button" type="button" aria-label="Sulje ohje">×</button>
+        </div>
+        <p>Valitse hoitourakka ja tarkastele sen tieosuuksia sekä avoimia töitä kartalla.</p>
+        <ul>
+          <li><strong>Lisää työ:</strong> valitse kartalta sijainti ja täytä työn tiedot.</li>
+          <li><strong>Muokkaa:</strong> muuta työn tietoja työlistasta tai kartan merkistä.</li>
+          <li><strong>Valmis:</strong> merkitse työ tehdyksi, jolloin se poistuu avoimien töiden kartalta.</li>
+          <li><strong>Karttatyökalut:</strong> vaihda teemaa, paikanna oma sijainti, avaa koko näyttö tai tulosta kartta PDF:ksi.</li>
+        </ul>
       </section>
     </div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

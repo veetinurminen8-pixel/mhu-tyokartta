@@ -1196,3 +1196,38 @@ document.querySelector("#sort-button").addEventListener("click", () => {
   showToast("Työt järjestetty uudelleen.");
 });
 document.querySelector("#rail-tasks").addEventListener("click", () => document.querySelector("#work-panel").scrollIntoView({ behavior: "smooth", block: "center" }));
+const helpBackdrop = document.querySelector("#help-backdrop");
+const helpButton = document.querySelector("#help-button");
+function closeHelp() {
+  helpBackdrop.hidden = true;
+}
+helpButton.addEventListener("click", () => {
+  helpBackdrop.hidden = false;
+  document.querySelector("#close-help-button").focus();
+});
+document.querySelector("#close-help-button").addEventListener("click", closeHelp);
+helpBackdrop.addEventListener("click", event => {
+  if (event.target === helpBackdrop) closeHelp();
+});
+document.querySelector("#profile-menu-button").addEventListener("click", event => {
+  const button = event.currentTarget;
+  const menu = document.querySelector("#profile-menu");
+  const expanded = button.getAttribute("aria-expanded") === "true";
+  button.setAttribute("aria-expanded", String(!expanded));
+  menu.hidden = expanded;
+});
+document.querySelector("#logout-button").addEventListener("click", () => {
+  localStorage.removeItem("mhu-tyokartta-unlocked-v2");
+  window.location.reload();
+});
+document.addEventListener("click", event => {
+  const button = document.querySelector("#profile-menu-button");
+  const menu = document.querySelector("#profile-menu");
+  if (!menu.hidden && !menu.contains(event.target) && !button.contains(event.target)) {
+    menu.hidden = true;
+    button.setAttribute("aria-expanded", "false");
+  }
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !helpBackdrop.hidden) closeHelp();
+});

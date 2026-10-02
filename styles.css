@@ -30,10 +30,11 @@ button { color: inherit; }
 .rail-button:hover { background: #f2f5f1; color: var(--green); }
 .rail-button.active { background: #eaf3ec; color: var(--green); }
 .rail-button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
-.rail-bottom { position: relative; margin-top: auto; display: grid; justify-items: center; gap: 17px; }
+.rail-bottom { margin-top: auto; display: grid; justify-items: center; gap: 17px; }
 .avatar { display: grid; place-items: center; width: 33px; height: 33px; border-radius: 50%; background: #dcebe0; color: #315e43; font: 700 11px Manrope, sans-serif; }
 .profile-menu-button { padding: 0; border: 0; cursor: pointer; }
-.profile-menu { position: absolute; z-index: 20; left: 45px; bottom: 0; width: 190px; padding: 12px; border: 1px solid #e2e8e1; border-radius: 9px; background: #fff; box-shadow: 0 8px 24px #18251f24; }
+.profile-menu-container { position: relative; }
+.profile-menu { position: absolute; z-index: 20; top: calc(100% + 8px); right: 0; width: 190px; padding: 12px; border: 1px solid #e2e8e1; border-radius: 9px; background: #fff; box-shadow: 0 8px 24px #18251f24; }
 .profile-menu[hidden] { display: none; }
 .profile-menu strong { display: block; margin: 0 3px 8px; color: #34483a; font-size: 11px; }
 .profile-menu button { width: 100%; min-height: 32px; padding: 0 8px; border: 1px solid #e5eae4; border-radius: 6px; background: #fff; color: #526257; text-align: left; font-size: 10px; cursor: pointer; }

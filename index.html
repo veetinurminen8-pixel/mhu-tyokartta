@@ -27,11 +27,7 @@
           <button class="rail-button" type="button" aria-label="Ohje" title="Ohje" id="help-button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 4.2 1.6c-1 .9-1.9 1.2-1.9 2.7M12 16.7v.1"/></svg>
           </button>
-          <button class="avatar profile-menu-button" type="button" aria-label="Veeti Nurminen, avaa käyttäjävalikko" aria-expanded="false" aria-controls="profile-menu" id="profile-menu-button">VN</button>
-          <div class="profile-menu" id="profile-menu" hidden>
-            <strong>Veeti Nurminen</strong>
-            <button type="button" id="logout-button">Kirjaudu ulos</button>
-          </div>
+          <div class="avatar" aria-label="Veeti Nurminen">VN</div>
         </div>
       </aside>
 
@@ -45,7 +41,13 @@
             <div class="sync-status"><span class="status-dot"></span><span>Tiedot tallessa</span></div>
             <span class="topbar-separator"></span>
             <div class="user-info"><span class="user-name">Veeti Nurminen</span><span class="user-role">Työnjohto</span></div>
-            <div class="avatar avatar-large" aria-label="Veeti Nurminen">VN</div>
+            <div class="profile-menu-container">
+              <button class="avatar avatar-large profile-menu-button" type="button" aria-label="Veeti Nurminen, avaa käyttäjävalikko" aria-expanded="false" aria-controls="profile-menu" id="profile-menu-button">VN</button>
+              <div class="profile-menu" id="profile-menu" hidden>
+                <strong>Veeti Nurminen</strong>
+                <button type="button" id="logout-button">Kirjaudu ulos</button>
+              </div>
+            </div>
           </div>
         </header>
 

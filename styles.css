@@ -203,6 +203,9 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .task-location-secondary { margin: 1px 0 0 15px; color: #a4ada6; font-size: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .task-extra { display: flex; align-items: center; gap: 5px; margin-top: 7px; }
 .task-photo-thumb { width: 24px; height: 19px; object-fit: cover; border-radius: 3px; border: 1px solid #e2e7e1; }
+.photo-open-button { display: block; min-width: 0; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+.photo-open-button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.task-photo-thumb-button { flex: 0 0 auto; border-radius: 3px; }
 .sign-badge { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: 4px; padding: 3px 5px; background: #f2f5f1; color: #69766c; font-size: 7px; }
 .side-badge { flex: 0 0 auto; border-radius: 4px; padding: 3px 5px; background: #eef3f5; color: #5c7480; font-size: 7px; }
 .task-actions { display: flex; align-items: center; justify-content: space-between; gap: 5px; margin-top: 9px; }
@@ -214,6 +217,8 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .complete-button { border: 1px solid #dce9de; color: #347250; background: #f6faf6; }
 .complete-button:hover { color: white; background: #377953; border-color: #377953; }
 .task-photo { width: 100%; height: 83px; object-fit: cover; border-radius: 6px; margin-top: 7px; border: 1px solid #e7ebe6; }
+.task-photo-button { width: 100%; margin-top: 7px; }
+.task-photo-button .task-photo { display: block; margin-top: 0; }
 .empty-state { padding: 38px 23px 30px; text-align: center; }
 .empty-icon { width: 40px; height: 40px; display: grid; place-items: center; margin: 0 auto 12px; border-radius: 50%; background: #edf5ef; color: #43825c; font-size: 20px; }
 .empty-state strong { font: 700 12px Manrope, sans-serif; }
@@ -237,6 +242,11 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .help-dialog p, .help-dialog li { color: #66736a; font-size: 12px; line-height: 1.6; }
 .help-dialog ul { display: grid; gap: 8px; padding-left: 19px; margin-bottom: 0; }
 .help-dialog li strong { color: #33493a; }
+.photo-lightbox { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 48px 24px 24px; background: #0c1512ed; }
+.photo-lightbox[hidden] { display: none; }
+.photo-lightbox > img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 5px; box-shadow: 0 8px 36px #0008; }
+.photo-lightbox-close { position: absolute; top: 12px; right: 16px; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid #ffffff65; border-radius: 50%; background: #ffffff20; color: #fff; font-size: 28px; line-height: 1; cursor: pointer; }
+.photo-lightbox-close:hover { background: #ffffff35; }
 .work-modal { width: min(100%, 485px); max-height: calc(100vh - 40px); overflow-y: auto; padding: 22px 25px 20px; background: #fff; border: 1px solid #e9ede8; border-radius: 13px; box-shadow: 0 18px 60px #101a1438; animation: modal-in .18s ease-out; }
 @keyframes modal-in { from { opacity: 0; transform: translateY(7px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
@@ -419,6 +429,7 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .task-map-popup p { margin: 0; font-size: 10px; line-height: 1.45; }
 .task-map-popup-location { display: block; color: #748078; font-size: 9px; }
 .task-map-popup-location-secondary { display: block; margin-top: 1px; color: #9aa39b; font-size: 8px; }
+.task-map-popup-photo-button { width: 100%; }
 .task-map-popup-photo { display: block; width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; }
 .task-map-popup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
 .task-map-popup-actions button { min-height: 31px; border-radius: 6px; font-size: 9px; font-weight: 700; cursor: pointer; }

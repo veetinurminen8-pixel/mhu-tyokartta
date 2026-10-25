@@ -132,6 +132,8 @@ const taskList = document.querySelector("#task-list");
 const emptyState = document.querySelector("#empty-state");
 const mapCanvas = document.querySelector("#map-canvas");
 const modalBackdrop = document.querySelector("#modal-backdrop");
+const photoLightbox = document.querySelector("#photo-lightbox");
+const photoLightboxImage = document.querySelector("#photo-lightbox-image");
 const form = document.querySelector("#work-form");
 const typeSelect = document.querySelector("#work-type");
 const signSelect = document.querySelector("#sign-id");
@@ -617,7 +619,7 @@ function renderMapMarkers() {
     const sideLabel = taskSideLabel(task.side);
     const side = sideLabel ? `<span class="task-map-popup-side">Tien puoli: ${sideLabel}</span>` : "";
     const description = task.description ? `<p>${escapeHtml(task.description)}</p>` : "";
-    const photo = task.photo ? `<img class="task-map-popup-photo" src="${escapeHtml(task.photo)}" alt="Kuva työkohteesta">` : "";
+    const photo = task.photo ? `<button class="photo-open-button task-map-popup-photo-button" type="button" data-photo-task="${escapeHtml(task.id)}" aria-label="Avaa työkohteen kuva suurena"><img class="task-map-popup-photo" src="${escapeHtml(task.photo)}" alt="Kuva työkohteesta"></button>` : "";
     marker.bindPopup(`
       <div class="task-map-popup">
         <span class="task-map-popup-type">${escapeHtml(meta.label)}</span>
@@ -677,7 +679,7 @@ function renderTasks() {
     const invasiveSpeciesCredit = task.type === "invasive-species"
       ? '<a class="side-badge" href="https://vieraslajit.fi/lajit/MX.38950" target="_blank" rel="noreferrer">Kuvake: Vieraslajit.fi</a>'
       : "";
-    const photo = task.photo ? `<img class="task-photo-thumb" src="${task.photo}" alt="Työkohteen kuva">` : "";
+    const photo = task.photo ? `<button class="photo-open-button task-photo-thumb-button" type="button" data-photo-task="${escapeHtml(task.id)}" aria-label="Avaa työkohteen kuva suurena"><img class="task-photo-thumb" src="${escapeHtml(task.photo)}" alt="Työkohteen kuva"></button>` : "";
     return `<article class="task-card" data-task-card="${escapeHtml(task.id)}">
       <div class="task-icon ${meta.className}">${taskIconContent}</div>
       <div class="task-content">
@@ -685,7 +687,7 @@ function renderTasks() {
         ${task.description ? `<h4>${escapeHtml(task.description)}</h4>` : ""}
         <div class="task-location"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 6.8c0 3.2-5 7-5 7s-5-3.8-5-7a5 5 0 1 1 10 0Z"/><circle cx="8" cy="6.5" r="1.5"/></svg>${escapeHtml([roadLabel(task.road), taskRoadAddressText(task)].filter(Boolean).join(" · "))}</div>
         <div class="task-location-secondary">${escapeHtml(task.location)}</div>
-        ${task.photo ? `<img class="task-photo" src="${task.photo}" alt="Kuva kohteesta">` : ""}
+        ${task.photo ? `<button class="photo-open-button task-photo-button" type="button" data-photo-task="${escapeHtml(task.id)}" aria-label="Avaa työkohteen kuva suurena"><img class="task-photo" src="${escapeHtml(task.photo)}" alt="Kuva kohteesta"></button>` : ""}
         ${signBadge || sideBadge || photo || invasiveSpeciesCredit ? `<div class="task-extra">${signBadge}${sideBadge}${invasiveSpeciesCredit}${photo}</div>` : ""}
         <div class="task-actions">
           <span class="task-date">${escapeHtml(task.date || "Juuri lisätty")}</span>
@@ -847,6 +849,27 @@ document.querySelectorAll("#add-work-button, #panel-add-button, #empty-add-butto
 document.querySelector("#fullscreen-add-work-button").addEventListener("click", () => {
   openModal();
   document.querySelector("#pick-location").click();
+});
+function openPhotoLightbox(src, alt) {
+  photoLightboxImage.src = src;
+  photoLightboxImage.alt = alt;
+  photoLightbox.hidden = false;
+  document.querySelector("#close-photo-lightbox").focus();
+}
+function closePhotoLightbox() {
+  photoLightbox.hidden = true;
+  photoLightboxImage.removeAttribute("src");
+}
+document.addEventListener("click", event => {
+  const photoButton = event.target.closest("[data-photo-task]");
+  if (photoButton) {
+    const task = currentTasks.find(item => item.id === photoButton.dataset.photoTask);
+    if (task?.photo) openPhotoLightbox(task.photo, photoButton.querySelector("img")?.alt || "Kuva työkohteesta");
+  }
+});
+document.querySelector("#close-photo-lightbox").addEventListener("click", closePhotoLightbox);
+photoLightbox.addEventListener("click", event => {
+  if (event.target === photoLightbox) closePhotoLightbox();
 });
 document.querySelector("#close-modal").addEventListener("click", closeModal);
 document.querySelector("#cancel-modal").addEventListener("click", closeModal);
@@ -1154,6 +1177,7 @@ function updateFullscreenButton() {
   // Koko näytön tilassa selain näyttää vain fullscreen-elementin jälkeläiset,
   // joten modaali-ikkuna pitää siirtää hetkeksi kartan sisään, jotta "Lisää työ" toimii myös silloin.
   (active ? mapPanel : document.body).appendChild(modalBackdrop);
+  (active ? mapPanel : document.body).appendChild(photoLightbox);
   window.setTimeout(() => map.invalidateSize(), 50);
 }
 
@@ -1277,4 +1301,5 @@ document.addEventListener("click", event => {
 });
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !helpBackdrop.hidden) closeHelp();
+  if (event.key === "Escape" && !photoLightbox.hidden) closePhotoLightbox();
 });

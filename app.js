@@ -163,6 +163,12 @@ const map = L.map("leaflet-map", {
   maxZoom: 19
 }).setView([61.86, 25.2], 10);
 
+function updateTaskMarkerScale() {
+  mapCanvas.classList.toggle("task-markers-compact", map.getZoom() <= 8);
+}
+map.on("zoomend", updateTaskMarkerScale);
+updateTaskMarkerScale();
+
 const tileThemes = {
   osm: {
     url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",

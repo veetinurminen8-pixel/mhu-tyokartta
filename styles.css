@@ -369,6 +369,12 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .map-theme-button.active { background: #fff; color: #315942; box-shadow: 0 1px 4px #101a142e; }
 .map-canvas.layers-hidden .leaflet-overlay-pane { visibility: hidden; }
 .task-map-icon { border: 0; background: transparent; }
+.map-canvas.task-markers-compact .task-map-icon > img,
+.map-canvas.task-markers-compact .task-map-icon > .traffic-sign-marker,
+.map-canvas.task-markers-compact .task-map-icon > .roadwork-sign-icon,
+.map-canvas.task-markers-compact .task-map-icon > .marker-shape { scale: .8; }
+.map-canvas.task-markers-compact .roadwork-alert { font-size: 8.8px; }
+.map-canvas.task-markers-compact .marker-shape span { font-size: 7.2px; }
 .sign-map-icon { display: grid; place-items: center; }
 .traffic-sign-marker { display: grid; width: 40px; height: 40px; place-items: center; overflow: hidden; border: 2px solid #fff; border-radius: 50%; background: #fff; box-shadow: 0 2px 7px #25392a80; }
 .traffic-sign-marker img { display: block; width: 35px; height: 35px; object-fit: contain; }

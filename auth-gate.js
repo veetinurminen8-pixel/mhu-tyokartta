@@ -7,7 +7,7 @@
 (function () {
   const unlockStorageKey = "mhu-tyokartta-unlocked-v2";
   const allowedUsername = "veeti nurminen";
-  const passwordHashHex = "c3976205e7ef1917478b29af460fe0b7cc1f2bb2d8ae155dc02d5ccb7417ba05";
+  const passwordHashHex = "a14b555fc92f3a00b59c01e8955c5c209641cf34c0634005c53f43f7931a460f";
 
   if (localStorage.getItem(unlockStorageKey) === "1") return;
 

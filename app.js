@@ -800,7 +800,8 @@ function printTask(taskId, taskOverride = null) {
           .report-media figure > img { display: block; max-width: 100%; max-height: 72mm; object-fit: contain; object-position: left; }
           .report-map-frame { position: relative; height: 54mm; overflow: hidden; border: 1px solid #dfe6de; border-radius: 4px; background: #e7ebdf; }
           .report-map-frame > img { position: absolute; width: 256px; height: 256px; max-width: none; }
-          .report-map-marker { position: absolute; left: 50%; top: 50%; width: 15px; height: 15px; border: 3px solid white; border-radius: 50%; transform: translate(-50%, -50%); background: #c33b32; box-shadow: 0 1px 5px #18251d99; }
+          .report-map-marker { position: absolute; left: 50%; top: 50%; width: 19px; height: 19px; border: 2px solid #fff; border-radius: 50% 50% 50% 0; transform: translate(-50%, -62%) rotate(-45deg); background: #c8322b; box-shadow: 0 1px 4px #18251d99; }
+          .report-map-marker::after { content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; border-radius: 50%; transform: translate(-50%, -50%); background: #fff; }
           .report-media figcaption { margin-top: 5px; }
           figcaption, footer { color: #748078; font-size: 10px; }
           figcaption { margin-top: 5px; }

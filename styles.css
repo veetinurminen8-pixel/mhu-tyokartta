@@ -211,9 +211,7 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .task-actions { display: flex; align-items: center; justify-content: space-between; gap: 5px; margin-top: 9px; }
 .task-date { color: #a0a9a2; font-size: 8px; }
 .task-action-buttons { display: flex; align-items: center; gap: 4px; }
-.print-task-button, .edit-button, .complete-button { min-height: 25px; padding: 4px 7px; border-radius: 5px; font-size: 8px; font-weight: 600; cursor: pointer; transition: .15s; white-space: nowrap; }
-.print-task-button { border: 1px solid #dfe6de; color: #52685a; background: #f7faf6; }
-.print-task-button:hover { border-color: #91ad98; color: #315e43; background: #f3f8f3; }
+.edit-button, .complete-button { min-height: 25px; padding: 4px 7px; border-radius: 5px; font-size: 8px; font-weight: 600; cursor: pointer; transition: .15s; white-space: nowrap; }
 .edit-button { border: 1px solid #dfe6de; color: #52685a; background: #fff; }
 .edit-button:hover { border-color: #91ad98; color: #315e43; background: #f3f8f3; }
 .complete-button { border: 1px solid #dce9de; color: #347250; background: #f6faf6; }
@@ -299,6 +297,9 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
 .upload-action { margin-left: auto; color: #397451; font-size: 9px; font-weight: 600; }
 .form-error { margin-top: 10px; color: #a14535; background: #fff4f1; border: 1px solid #f0d6ce; border-radius: 6px; padding: 8px 10px; font-size: 9px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #edf0ec; padding-top: 14px; margin-top: 16px; }
+.modal-print-button { min-height: 36px; margin-right: auto; padding: 0 12px; border: 1px solid #dfe6de; border-radius: 7px; background: #f7faf6; color: #52685a; font-size: 10px; cursor: pointer; }
+.modal-print-button:hover { border-color: #91ad98; color: #315e43; background: #f3f8f3; }
+.modal-print-button[hidden] { display: none; }
 .cancel-button { height: 36px; border: 1px solid #e1e6e1; border-radius: 7px; padding: 0 13px; background: #fff; color: #69766d; font-size: 10px; cursor: pointer; }
 .cancel-button:hover { background: #f6f8f5; }
 .save-button { height: 36px; font-size: 10px; }

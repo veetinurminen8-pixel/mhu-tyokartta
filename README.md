@@ -30,7 +30,7 @@ Työtä lisättäessä tien puolen voi valita oikeaksi tai vasemmaksi. Tien puol
 
 Työn kortin tai karttamerkin **Muokkaa**-painikkeella voi muuttaa havaintoa jälkikäteen. Muokkauksessa aiempi kuva säilyy, ellei sitä korvata uudella. Työn voi kuitata valmiiksi kortilta tai karttaponnahduksesta; kuittaus poistaa merkinnän kartalta ja avoimien töiden listasta. Merkin avaaminen ei siirrä sivua automaattisesti avoimien töiden listaan.
 
-Yksittäisen työn **PDF**-painike avaa tulostettavan työraportin, jonka voi selaimen tulostusikkunassa tulostaa tai tallentaa PDF-tiedostoksi. Raportti sisältää työn tiedot, sijaintikoordinaatit, kuvauksen ja mahdollisen kohdekuvan.
+Työn muokkausikkunan alareunan **Tulosta PDF** -painike avaa työraportin, jonka voi selaimen tulostusikkunassa tulostaa tai tallentaa PDF-tiedostoksi. Raportti sisältää työn tiedot, sijaintikoordinaatit, kuvauksen, mahdollisen kohdekuvan sekä OpenStreetMap-pohjaisen pienoiskartan työn sijainnista.
 
 - [Väyläviraston WFS-palvelu](https://avoinapi.vaylapilvi.fi/vaylatiedot/ows?service=WFS&request=GetCapabilities)
 - [Maanteiden hoitourakka -aineisto](https://avoindata.suomi.fi/data/fi/dataset/maanteiden-hoitourakka)

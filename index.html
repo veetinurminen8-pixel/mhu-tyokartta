@@ -7,7 +7,7 @@
     <title>Työkartta | MHU</title>
     <script src="auth-gate.js?v=map-login-layout-fix-20261110"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="styles.css?v=task-pdf-print">
+    <link rel="stylesheet" href="styles.css?v=task-pdf-map">
   </head>
   <body>
     <div class="app-shell">
@@ -253,6 +253,7 @@
 
           <div class="form-error" id="form-error" role="alert" hidden></div>
           <div class="modal-actions">
+            <button class="modal-print-button" id="print-edit-task-button" type="button" hidden>Tulosta PDF</button>
             <button class="cancel-button" id="cancel-modal" type="button">Peruuta</button>
             <button class="primary-button save-button" id="save-work-button" type="submit"><span>+</span> Lisää työ kartalle</button>
           </div>
@@ -269,7 +270,7 @@
         <ul>
           <li><strong>Lisää työ:</strong> valitse kartalta sijainti ja täytä työn tiedot.</li>
           <li><strong>Muokkaa:</strong> muuta työn tietoja työlistasta tai kartan merkistä.</li>
-          <li><strong>PDF:</strong> avaa yksittäisen työn tulosteen; tulostusikkunassa voit tallentaa sen PDF-tiedostoksi.</li>
+          <li><strong>PDF:</strong> avaa työn muokkaus ja valitse alareunasta Tulosta PDF; tulostusikkunassa voit tallentaa raportin PDF-tiedostoksi.</li>
           <li><strong>Valmis:</strong> merkitse työ tehdyksi, jolloin se poistuu avoimien töiden kartalta.</li>
           <li><strong>Karttatyökalut:</strong> vaihda teemaa, paikanna oma sijainti, avaa koko näyttö tai tulosta kartta PDF:ksi.</li>
         </ul>
@@ -282,6 +283,6 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="jamsa-roads.js"></script>
-    <script src="app.js?v=task-pdf-print"></script>
+    <script src="app.js?v=task-pdf-map"></script>
   </body>
 </html>

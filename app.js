@@ -693,7 +693,6 @@ function renderTasks() {
         <div class="task-actions">
           <span class="task-date">${escapeHtml(task.date || "Juuri lisätty")}</span>
           <div class="task-action-buttons">
-            <button class="print-task-button" type="button" data-print-task="${escapeHtml(task.id)}" aria-label="Tulosta työ tai tallenna PDF-muodossa">PDF</button>
             <button class="edit-button" type="button" data-edit="${escapeHtml(task.id)}">Muokkaa</button>
             <button class="complete-button" type="button" data-complete="${escapeHtml(task.id)}">✓ Valmis</button>
           </div>
@@ -707,8 +706,37 @@ function renderTasks() {
   renderMap();
 }
 
-function printTask(taskId) {
-  const task = currentTasks.find(item => item.id === taskId);
+function taskMapPreview(task) {
+  if (!Number.isFinite(task.lat) || !Number.isFinite(task.lng)) return "";
+  const zoom = 14;
+  const tileCount = 2 ** zoom;
+  const latitude = Math.max(-85.05112878, Math.min(85.05112878, task.lat));
+  const x = (task.lng + 180) / 360 * tileCount;
+  const radians = latitude * Math.PI / 180;
+  const y = (1 - Math.asinh(Math.tan(radians)) / Math.PI) / 2 * tileCount;
+  const tileX = Math.floor(x);
+  const tileY = Math.floor(y);
+  const pixelX = (x - tileX) * 256;
+  const pixelY = (y - tileY) * 256;
+  const tiles = [];
+  for (let offsetY = -1; offsetY <= 1; offsetY += 1) {
+    const row = tileY + offsetY;
+    if (row < 0 || row >= tileCount) continue;
+    for (let offsetX = -1; offsetX <= 1; offsetX += 1) {
+      const column = (tileX + offsetX + tileCount) % tileCount;
+      const left = Math.round(120 + offsetX * 256 - pixelX);
+      const top = Math.round(75 + offsetY * 256 - pixelY);
+      tiles.push(`<img src="https://tile.openstreetmap.org/${zoom}/${column}/${row}.png" alt="" style="left:${left}px;top:${top}px">`);
+    }
+  }
+  return `<figure class="report-map">
+    <div class="report-map-frame" role="img" aria-label="Kartta työpisteen sijainnista">${tiles.join("")}<span class="report-map-marker"></span></div>
+    <figcaption>Kohteen sijainti · © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></figcaption>
+  </figure>`;
+}
+
+function printTask(taskId, taskOverride = null) {
+  const task = taskOverride || currentTasks.find(item => item.id === taskId);
   if (!task) {
     showToast("Työtä ei löytynyt tulostettavaksi.");
     return;
@@ -739,6 +767,10 @@ function printTask(taskId) {
   const photo = task.photo
     ? `<figure><img src="${escapeHtml(task.photo)}" alt="Työkohteen kuva"><figcaption>Työkohteen kuva</figcaption></figure>`
     : "";
+  const mapPreview = taskMapPreview(task);
+  const reportMedia = photo || mapPreview
+    ? `<div class="report-media${photo && mapPreview ? " report-media-paired" : ""}">${photo}${mapPreview}</div>`
+    : "";
 
   printWindow.opener = null;
   printWindow.document.open();
@@ -762,8 +794,14 @@ function printTask(taskId) {
           dt { color: #748078; font-size: 11px; }
           dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
           .description { white-space: pre-wrap; overflow-wrap: anywhere; }
-          figure { margin: 18px 0 0; page-break-inside: avoid; }
-          figure img { display: block; max-width: 100%; max-height: 100mm; object-fit: contain; object-position: left; }
+          .report-media { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: start; margin-top: 18px; page-break-inside: avoid; }
+          .report-media-paired { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .report-media figure { min-width: 0; margin: 0; }
+          .report-media figure > img { display: block; max-width: 100%; max-height: 72mm; object-fit: contain; object-position: left; }
+          .report-map-frame { position: relative; height: 54mm; overflow: hidden; border: 1px solid #dfe6de; border-radius: 4px; background: #e7ebdf; }
+          .report-map-frame > img { position: absolute; width: 256px; height: 256px; max-width: none; }
+          .report-map-marker { position: absolute; left: 50%; top: 50%; width: 15px; height: 15px; border: 3px solid white; border-radius: 50%; transform: translate(-50%, -50%); background: #c33b32; box-shadow: 0 1px 5px #18251d99; }
+          .report-media figcaption { margin-top: 5px; }
           figcaption, footer { color: #748078; font-size: 10px; }
           figcaption { margin-top: 5px; }
           a { color: #347250; }
@@ -780,13 +818,38 @@ function printTask(taskId) {
         <h2>Työn tiedot</h2>
         <dl>${detailsHtml}</dl>
         ${task.description ? `<h2>Kuvaus</h2><div class="description">${escapeHtml(task.description)}</div>` : ""}
-        ${photo}
+        ${reportMedia}
         ${mapLink ? `<p>${mapLink}</p>` : ""}
         <footer>Tulostettu ${escapeHtml(new Intl.DateTimeFormat("fi-FI", { dateStyle: "long", timeStyle: "short" }).format(new Date()))}</footer>
         <script>window.addEventListener("load", () => window.print());<\/script>
       </body>
     </html>`);
   printWindow.document.close();
+}
+
+function printEditedTask() {
+  if (!editingTaskId) return;
+  const savedTask = currentTasks.find(item => item.id === editingTaskId);
+  if (!savedTask) {
+    showToast("Työtä ei löytynyt tulostettavaksi.");
+    return;
+  }
+  const position = pickedPosition || { lat: savedTask.lat, lng: savedTask.lng };
+  const type = typeSelect.value;
+  printTask(editingTaskId, {
+    ...savedTask,
+    type,
+    sign: type === "sign" ? signSelect.value : type === "roadwork" ? "A11 – tietyö" : "",
+    road: roadSelect.value || savedTask.road,
+    side: sideSelect.value,
+    location: Number.isFinite(position.lat) && Number.isFinite(position.lng)
+      ? formatCoordinates(L.latLng(position.lat, position.lng))
+      : savedTask.location,
+    lat: position.lat,
+    lng: position.lng,
+    description: document.querySelector("#work-description").value.trim(),
+    photo: photoData
+  });
 }
 
 function completeTask(taskId) {
@@ -816,6 +879,7 @@ function openModal(taskToEdit = null) {
   editingTaskId = taskToEdit?.id || null;
   document.querySelector("#modal-eyebrow").textContent = editingTaskId ? "MUOKKAA MERKINTÄÄ" : "UUSI MERKINTÄ KARTALLE";
   document.querySelector("#modal-title").textContent = editingTaskId ? "Muokkaa havaintoa" : "Lisää työ";
+  document.querySelector("#print-edit-task-button").hidden = !editingTaskId;
   document.querySelector("#save-work-button").innerHTML = editingTaskId
     ? "Tallenna muutokset"
     : "<span>+</span> Lisää työ kartalle";
@@ -957,6 +1021,7 @@ photoLightbox.addEventListener("click", event => {
 });
 document.querySelector("#close-modal").addEventListener("click", closeModal);
 document.querySelector("#cancel-modal").addEventListener("click", closeModal);
+document.querySelector("#print-edit-task-button").addEventListener("click", printEditedTask);
 modalBackdrop.addEventListener("click", event => {
   if (event.target === modalBackdrop) closeModal();
 });

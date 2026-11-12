@@ -633,6 +633,7 @@ function renderMapMarkers() {
         <span class="task-map-popup-location">${escapeHtml([roadLabel(task.road), taskRoadAddressText(task)].filter(Boolean).join(" · "))}<span class="task-map-popup-location-secondary">${escapeHtml(task.location)}</span></span>
         ${photo}
         <div class="task-map-popup-actions">
+          <button class="task-map-popup-print" type="button" data-map-print="${escapeHtml(task.id)}" aria-label="Tulosta työ tai tallenna PDF-muodossa">PDF</button>
           <button class="task-map-popup-edit" type="button" data-map-edit="${escapeHtml(task.id)}">Muokkaa</button>
           <button class="task-map-popup-complete" type="button" data-map-complete="${escapeHtml(task.id)}">✓ Kuittaa valmiiksi</button>
         </div>
@@ -692,6 +693,7 @@ function renderTasks() {
         <div class="task-actions">
           <span class="task-date">${escapeHtml(task.date || "Juuri lisätty")}</span>
           <div class="task-action-buttons">
+            <button class="print-task-button" type="button" data-print-task="${escapeHtml(task.id)}" aria-label="Tulosta työ tai tallenna PDF-muodossa">PDF</button>
             <button class="edit-button" type="button" data-edit="${escapeHtml(task.id)}">Muokkaa</button>
             <button class="complete-button" type="button" data-complete="${escapeHtml(task.id)}">✓ Valmis</button>
           </div>
@@ -703,6 +705,88 @@ function renderTasks() {
   taskList.hidden = tasks.length === 0;
   document.querySelector("#panel-add-button").hidden = tasks.length === 0;
   renderMap();
+}
+
+function printTask(taskId) {
+  const task = currentTasks.find(item => item.id === taskId);
+  if (!task) {
+    showToast("Työtä ei löytynyt tulostettavaksi.");
+    return;
+  }
+
+  const printWindow = window.open("", "_blank");
+  if (!printWindow) {
+    showToast("Tulosteen avaaminen estettiin. Salli ponnahdusikkunat ja yritä uudelleen.");
+    return;
+  }
+
+  const meta = taskTypes[task.type] || { ...taskTypes.other, label: removedTaskTypeLabels[task.type] || taskTypes.other.label };
+  const details = [
+    ["Urakka", `${contract.name} · ${contract.area}`],
+    ["Työn tyyppi", meta.label],
+    task.sign ? ["Liikennemerkin tunnus", task.sign] : null,
+    task.road ? ["Tieosuus", roadLabel(task.road)] : null,
+    taskRoadAddressText(task) ? ["Tieosoite", taskRoadAddressText(task)] : null,
+    taskSideLabel(task.side) ? ["Tien puoli", taskSideLabel(task.side)] : null,
+    task.location ? ["Sijaintikuvaus", task.location] : null,
+    Number.isFinite(task.lat) && Number.isFinite(task.lng) ? ["Koordinaatit", formatCoordinates({ lat: task.lat, lng: task.lng })] : null,
+    ["Ilmoitettu", task.date || "Juuri lisätty"]
+  ].filter(Boolean);
+  const detailsHtml = details.map(([label, value]) => `<div class="detail"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
+  const mapLink = Number.isFinite(task.lat) && Number.isFinite(task.lng)
+    ? `<a href="https://www.openstreetmap.org/?mlat=${encodeURIComponent(task.lat)}&mlon=${encodeURIComponent(task.lng)}#map=17/${encodeURIComponent(task.lat)}/${encodeURIComponent(task.lng)}">Avaa sijainti kartalla</a>`
+    : "";
+  const photo = task.photo
+    ? `<figure><img src="${escapeHtml(task.photo)}" alt="Työkohteen kuva"><figcaption>Työkohteen kuva</figcaption></figure>`
+    : "";
+
+  printWindow.opener = null;
+  printWindow.document.open();
+  printWindow.document.write(`<!doctype html>
+    <html lang="fi">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>${escapeHtml(meta.label)} – ${escapeHtml(task.location || roadLabel(task.road || ""))}</title>
+        <style>
+          @page { size: A4 portrait; margin: 18mm; }
+          * { box-sizing: border-box; }
+          body { margin: 0; color: #26352b; font: 14px/1.5 Arial, sans-serif; }
+          header { padding-bottom: 16px; border-bottom: 2px solid #347250; }
+          .brand { color: #347250; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+          h1 { margin: 7px 0 2px; font-size: 23px; }
+          .subtitle { color: #657268; font-size: 13px; }
+          h2 { margin: 22px 0 9px; font-size: 15px; }
+          dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; margin: 0; }
+          .detail { padding: 8px 0; border-bottom: 1px solid #e6ebe6; }
+          dt { color: #748078; font-size: 11px; }
+          dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+          .description { white-space: pre-wrap; overflow-wrap: anywhere; }
+          figure { margin: 18px 0 0; page-break-inside: avoid; }
+          figure img { display: block; max-width: 100%; max-height: 100mm; object-fit: contain; object-position: left; }
+          figcaption, footer { color: #748078; font-size: 10px; }
+          figcaption { margin-top: 5px; }
+          a { color: #347250; }
+          footer { margin-top: 26px; padding-top: 8px; border-top: 1px solid #e6ebe6; }
+          @media screen { body { max-width: 760px; margin: 32px auto; padding: 0 24px; } }
+        </style>
+      </head>
+      <body>
+        <header>
+          <div class="brand">MHU Työkartta · Työraportti</div>
+          <h1>${escapeHtml(meta.label)}</h1>
+          <div class="subtitle">${escapeHtml([roadLabel(task.road || ""), task.location].filter(Boolean).join(" · "))}</div>
+        </header>
+        <h2>Työn tiedot</h2>
+        <dl>${detailsHtml}</dl>
+        ${task.description ? `<h2>Kuvaus</h2><div class="description">${escapeHtml(task.description)}</div>` : ""}
+        ${photo}
+        ${mapLink ? `<p>${mapLink}</p>` : ""}
+        <footer>Tulostettu ${escapeHtml(new Intl.DateTimeFormat("fi-FI", { dateStyle: "long", timeStyle: "short" }).format(new Date()))}</footer>
+        <script>window.addEventListener("load", () => window.print());<\/script>
+      </body>
+    </html>`);
+  printWindow.document.close();
 }
 
 function completeTask(taskId) {
@@ -963,6 +1047,11 @@ map.on("click", event => {
 });
 
 taskList.addEventListener("click", event => {
+  const printButton = event.target.closest("[data-print-task]");
+  if (printButton) {
+    printTask(printButton.dataset.printTask);
+    return;
+  }
   const editButton = event.target.closest("[data-edit]");
   if (editButton) {
     const task = currentTasks.find(item => item.id === editButton.dataset.edit);
@@ -975,8 +1064,10 @@ taskList.addEventListener("click", event => {
 
 map.on("popupopen", event => {
   const popupElement = event.popup.getElement();
+  const printButton = popupElement?.querySelector("[data-map-print]");
   const editButton = popupElement?.querySelector("[data-map-edit]");
   const completeButton = popupElement?.querySelector("[data-map-complete]");
+  printButton?.addEventListener("click", () => printTask(printButton.dataset.mapPrint), { once: true });
   editButton?.addEventListener("click", () => {
     const task = currentTasks.find(item => item.id === editButton.dataset.mapEdit);
     map.closePopup();

@@ -645,7 +645,6 @@ function renderMapMarkers() {
         <span class="task-map-popup-location">${escapeHtml([roadLabel(task.road), taskRoadAddressText(task)].filter(Boolean).join(" · "))}<span class="task-map-popup-location-secondary">${escapeHtml(task.location)}</span></span>
         ${photo}
         <div class="task-map-popup-actions">
-          <button class="task-map-popup-print" type="button" data-map-print="${escapeHtml(task.id)}" aria-label="Tulosta työ tai tallenna PDF-muodossa">PDF</button>
           <button class="task-map-popup-edit" type="button" data-map-edit="${escapeHtml(task.id)}">Muokkaa</button>
           <button class="task-map-popup-complete" type="button" data-map-complete="${escapeHtml(task.id)}">✓ Kuittaa valmiiksi</button>
         </div>
@@ -1142,10 +1141,8 @@ taskList.addEventListener("click", event => {
 
 map.on("popupopen", event => {
   const popupElement = event.popup.getElement();
-  const printButton = popupElement?.querySelector("[data-map-print]");
   const editButton = popupElement?.querySelector("[data-map-edit]");
   const completeButton = popupElement?.querySelector("[data-map-complete]");
-  printButton?.addEventListener("click", () => printTask(printButton.dataset.mapPrint), { once: true });
   editButton?.addEventListener("click", () => {
     const task = currentTasks.find(item => item.id === editButton.dataset.mapEdit);
     map.closePopup();

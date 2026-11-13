@@ -9,7 +9,7 @@
   const demoUserStorageKey = "mhu-tyokartta-demo-user-v1";
   const allowedAccounts = [
     { username: "veeti nurminen", passwordHashHex: "a14b555fc92f3a00b59c01e8955c5c209641cf34c0634005c53f43f7931a460f" },
-    { username: "fluent-demo", passwordHashHex: "78e3f1a14be668beaf44b0935222659c66abb87c764f07199427a2388431dcf5" }
+    { username: "fluentdemo", passwordHashHex: "67781af5189cb7c757976476b11a75d6e31e2dca7a83be36f75c294f11143040" }
   ];
 
   if (localStorage.getItem(unlockStorageKey) === "1") return;
@@ -77,7 +77,7 @@
       const enteredHash = await sha256Hex(input.value);
       const account = allowedAccounts.find(allowed => enteredUsername === allowed.username && enteredHash === allowed.passwordHashHex);
       if (account) {
-        localStorage.setItem(demoUserStorageKey, account.username === "fluent-demo" ? "1" : "0");
+        localStorage.setItem(demoUserStorageKey, account.username === "fluentdemo" ? "1" : "0");
         localStorage.setItem(unlockStorageKey, "1");
         document.documentElement.classList.remove("auth-locked");
         overlay.remove();

@@ -1376,7 +1376,18 @@ printMapButton.addEventListener("click", () => {
   window.print();
 });
 window.addEventListener("afterprint", () => window.setTimeout(() => map.invalidateSize(), 50));
+function updateProfileDisplay() {
+  const isDemoUser = localStorage.getItem("mhu-tyokartta-demo-user-v1") === "1";
+  const name = isDemoUser ? "Fluent-demo" : "Veeti Nurminen";
+  document.querySelector(".user-name").textContent = name;
+  document.querySelector(".user-role").textContent = isDemoUser ? "Kokeilukäyttäjä" : "Työnjohto";
+  document.querySelector("#profile-menu-button").textContent = isDemoUser ? "FD" : "VN";
+  document.querySelector("#profile-menu-button").setAttribute("aria-label", `${name}, avaa käyttäjävalikko`);
+  document.querySelector("#profile-menu strong").textContent = name;
+}
+updateProfileDisplay();
 document.addEventListener("mhu-authenticated", () => {
+  updateProfileDisplay();
   requestAnimationFrame(() => {
     map.invalidateSize({ pan: false });
     requestAnimationFrame(() => map.invalidateSize({ pan: false }));
@@ -1455,6 +1466,7 @@ document.querySelector("#profile-menu-button").addEventListener("click", event =
 document.querySelector("#logout-button").addEventListener("click", () => {
   localStorage.removeItem("mhu-tyokartta-unlocked-v1");
   localStorage.removeItem("mhu-tyokartta-unlocked-v2");
+  localStorage.removeItem("mhu-tyokartta-demo-user-v1");
   window.location.replace(`${window.location.pathname}?signed-out=${Date.now()}`);
 });
 document.addEventListener("click", event => {

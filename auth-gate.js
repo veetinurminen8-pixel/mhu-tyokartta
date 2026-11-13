@@ -6,8 +6,11 @@
 // otetaan käyttöön.
 (function () {
   const unlockStorageKey = "mhu-tyokartta-unlocked-v2";
-  const allowedUsername = "veeti nurminen";
-  const passwordHashHex = "a14b555fc92f3a00b59c01e8955c5c209641cf34c0634005c53f43f7931a460f";
+  const demoUserStorageKey = "mhu-tyokartta-demo-user-v1";
+  const allowedAccounts = [
+    { username: "veeti nurminen", passwordHashHex: "a14b555fc92f3a00b59c01e8955c5c209641cf34c0634005c53f43f7931a460f" },
+    { username: "fluent-demo", passwordHashHex: "78e3f1a14be668beaf44b0935222659c66abb87c764f07199427a2388431dcf5" }
+  ];
 
   if (localStorage.getItem(unlockStorageKey) === "1") return;
 
@@ -24,7 +27,7 @@
   overlay.innerHTML = `
     <form id="auth-gate-form">
       <h1>Kirjaudu sisään</h1>
-      <p>Työkartta on suojattu. Syötä käyttäjätunnus ja salasana jatkaaksesi.</p>
+      <p>Kirjaudu demoon. Älä syötä luottamuksellisia tietoja; tämä prototyyppi ei suojaa tietoja palvelintasolla.</p>
       <label for="auth-gate-username">Käyttäjätunnus</label>
       <input type="text" id="auth-gate-username" autocomplete="username" autofocus required>
       <label for="auth-gate-input">Salasana</label>
@@ -72,7 +75,9 @@
       event.preventDefault();
       const enteredUsername = username.value.trim().replace(/\s+/g, " ").toLocaleLowerCase("fi-FI");
       const enteredHash = await sha256Hex(input.value);
-      if (enteredUsername === allowedUsername && enteredHash === passwordHashHex) {
+      const account = allowedAccounts.find(allowed => enteredUsername === allowed.username && enteredHash === allowed.passwordHashHex);
+      if (account) {
+        localStorage.setItem(demoUserStorageKey, account.username === "fluent-demo" ? "1" : "0");
         localStorage.setItem(unlockStorageKey, "1");
         document.documentElement.classList.remove("auth-locked");
         overlay.remove();

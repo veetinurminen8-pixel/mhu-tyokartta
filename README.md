@@ -32,6 +32,8 @@ Työn kortin tai karttamerkin **Muokkaa**-painikkeella voi muuttaa havaintoa jä
 
 Työn muokkausikkunan alareunan **Tulosta PDF** -painike avaa työraportin, jonka voi selaimen tulostusikkunassa tulostaa tai tallentaa PDF-tiedostoksi. Raportti sisältää työn tiedot, sijaintikoordinaatit, kuvauksen, mahdollisen kohdekuvan sekä OpenStreetMap-pohjaisen pienoiskartan työn sijainnista.
 
+Tietokoneen leveässä näkymässä kartalla ja avoimien töiden listalla on rajattu korkeus; pitkää työlistaa voi vierittää omassa paneelissaan.
+
 - [Väyläviraston WFS-palvelu](https://avoinapi.vaylapilvi.fi/vaylatiedot/ows?service=WFS&request=GetCapabilities)
 - [Maanteiden hoitourakka -aineisto](https://avoindata.suomi.fi/data/fi/dataset/maanteiden-hoitourakka)
 - [OpenStreetMapin tekijänoikeus- ja lisenssitiedot](https://www.openstreetmap.org/copyright)

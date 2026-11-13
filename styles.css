@@ -471,6 +471,13 @@ body.map-fullscreen-fallback-active { overflow: hidden; }
   .dashboard-grid.work-layout-below .task-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (min-width: 801px) {
+  .dashboard-grid { min-height: 0; align-items: start; }
+  .map-panel, .work-panel { height: min(680px, calc(100vh - 180px)); min-height: 420px; }
+  .map-panel .map-canvas { min-height: 0; }
+  .task-list { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+}
+
 @media (max-width: 540px) {
   .dashboard-grid.work-layout-below .task-list { grid-template-columns: 1fr; }
 }

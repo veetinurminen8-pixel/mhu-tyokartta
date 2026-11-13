@@ -161,9 +161,21 @@ const map = L.map("leaflet-map", {
   zoomControl: false,
   attributionControl: false,
   preferCanvas: true,
+  trackResize: false,
   minZoom: 7,
   maxZoom: 19
 }).setView([61.86, 25.2], 10);
+
+function invalidateMapSize() {
+  const center = map.getCenter();
+  const zoom = map.getZoom();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    map.invalidateSize({ pan: false });
+    map.setView(center, zoom, { animate: false });
+  }));
+}
+
+window.addEventListener("resize", invalidateMapSize);
 
 function updateTaskMarkerScale() {
   mapCanvas.classList.toggle("task-markers-compact", map.getZoom() <= 8);
@@ -1335,7 +1347,7 @@ function updateFullscreenButton() {
   // joten modaali-ikkuna pitää siirtää hetkeksi kartan sisään, jotta "Lisää työ" toimii myös silloin.
   (active ? mapPanel : document.body).appendChild(modalBackdrop);
   (active ? mapPanel : document.body).appendChild(photoLightbox);
-  window.setTimeout(() => map.invalidateSize(), 50);
+  invalidateMapSize();
 }
 
 if (fullscreenButton) {
@@ -1415,7 +1427,7 @@ function setWorkLayout(layout) {
     button.setAttribute("aria-pressed", String(selected));
   });
   localStorage.setItem(workLayoutStorageKey, layout);
-  window.setTimeout(() => map.invalidateSize(), 50);
+  invalidateMapSize();
 }
 const savedWorkLayout = localStorage.getItem(workLayoutStorageKey);
 setWorkLayout(savedWorkLayout === "below" ? "below" : "side");
